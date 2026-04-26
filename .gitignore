@@ -1,0 +1,30 @@
+# Raw / generated datasets
+data/raw/
+data/interim/
+data/processed/**/*.mat
+data/splits/
+
+# Large MATLAB model artifacts
+results/models/
+*.mat
+
+# Deprecated non-Bayes comparison experiments
+code/04_baselines/
+**/obsolete_nonbayes_baseline/
+
+# Runtime dependencies and generated workspaces
+node_modules/
+ppt_deck_workspace/node_modules/
+ppt_deck_workspace/scratch/
+ppt_deck_workspace/output/
+
+# Office temporary files
+~$*.pptx
+~$*.docx
+~$*.xlsx
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.tmp
+*.log

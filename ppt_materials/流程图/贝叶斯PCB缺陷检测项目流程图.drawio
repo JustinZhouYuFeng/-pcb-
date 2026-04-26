@@ -1,0 +1,128 @@
+<mxfile host="app.diagrams.net" modified="2026-04-26T20:15:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="pcb-bayes-flow" name="贝叶斯PCB缺陷检测流程图">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="基于贝叶斯优化的 PCB 缺陷检测项目流程" style="text;html=1;strokeColor=none;fillColor=none;fontSize=32;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="120" y="20" width="1360" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="真实彩色图像 → 手工特征 → 贝叶斯后验概率 → 阈值决策 → 评价与可视化" style="text;html=1;strokeColor=none;fillColor=none;fontSize=16;fontColor=#4B5563;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="330" y="70" width="940" height="28" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="data" value="数据集构建&#xa;VisA 真实 PCB 图像&#xa;正常 / 缺陷二分类" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EAF3FF;strokeColor=#2E5A88;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="210" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="split" value="数据整理与划分&#xa;pcb1 - pcb4 子集&#xa;训练 / 验证 / 测试" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EAF3FF;strokeColor=#2E5A88;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="320" y="120" width="210" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="preprocess" value="图像预处理&#xa;缩放到 256×256&#xa;灰度增强 + 颜色空间转换" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EAFBF3;strokeColor=#23845A;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="580" y="120" width="220" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="feature" value="特征提取&#xa;颜色 / 灰度 / 边缘&#xa;纹理 / 梯度结构" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EAFBF3;strokeColor=#23845A;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="850" y="120" width="220" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="vector" value="图像数值化表示&#xa;每张图像 → 1318 维特征向量&#xa;x = [x1, x2, ..., x1318]" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#EAFBF3;strokeColor=#23845A;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="120" width="250" height="92" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="featurePanel" value="1318 维手工特征组成" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontSize=15;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=top;spacingTop=8;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="850" y="245" width="520" height="205" as="geometry"/>
+        </mxCell>
+        <mxCell id="f1" value="颜色统计 36维&#xa;RGB / HSV / Lab&#xa;均值、方差、偏度、峰度" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;fontSize=12;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="870" y="285" width="150" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="f2" value="灰度统计 8维&#xa;熵 + 分位数&#xa;亮暗分布与对比度" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;fontSize=12;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="285" width="150" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="f3" value="边缘密度 2维&#xa;Canny / Sobel&#xa;结构边界变化" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;fontSize=12;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="285" width="150" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="f4" value="GLCM 纹理 4维&#xa;对比度、相关性&#xa;能量、同质性" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;fontSize=12;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="870" y="365" width="150" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="f5" value="LBP 纹理 944维&#xa;局部二值模式&#xa;局部缺陷纹理" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;fontSize=12;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="365" width="150" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="f6" value="HOG 梯度 324维&#xa;方向梯度直方图&#xa;走线与元件轮廓" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;fontSize=12;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="365" width="150" height="68" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="standard" value="特征标准化&#xa;z = (x - μ) / σ&#xa;只用训练集统计量" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#F3E8FF;strokeColor=#7E3FB2;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="60" y="520" width="210" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="pca" value="PCA 降维&#xa;搜索维度：10 / 20 / 40 / 80 / 120&#xa;降低冗余与噪声" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#F3E8FF;strokeColor=#7E3FB2;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="320" y="520" width="230" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="bayes" value="贝叶斯概率建模&#xa;估计 P(x|正常), P(x|缺陷)&#xa;再计算后验概率" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF3E6;strokeColor=#D95319;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="600" y="520" width="230" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="posterior" value="后验概率决策&#xa;输出 P(缺陷 | x)&#xa;阈值 T = 0.75" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF3E6;strokeColor=#D95319;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="880" y="520" width="220" height="92" as="geometry"/>
+        </mxCell>
+        <mxCell id="decision" value="分类输出&#xa;P(缺陷|x) ≥ T → 缺陷&#xa;否则 → 正常" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFF3E6;strokeColor=#D95319;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="520" width="220" height="92" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="bayesPanel" value="贝叶斯内部优化路线" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontSize=15;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=top;spacingTop=8;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="60" y="680" width="730" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="b0" value="Bayes-0&#xa;原始朴素贝叶斯" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=12;fontStyle=1;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="85" y="730" width="125" height="62" as="geometry"/>
+        </mxCell>
+        <mxCell id="b1" value="Bayes-1&#xa;加入 PCA 降维" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=12;fontStyle=1;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="230" y="730" width="125" height="62" as="geometry"/>
+        </mxCell>
+        <mxCell id="b2" value="Bayes-2&#xa;高斯贝叶斯建模" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=12;fontStyle=1;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="375" y="730" width="125" height="62" as="geometry"/>
+        </mxCell>
+        <mxCell id="b3" value="Bayes-3&#xa;正则化协方差" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#94A3B8;fontSize=12;fontStyle=1;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="520" y="730" width="125" height="62" as="geometry"/>
+        </mxCell>
+        <mxCell id="b4" value="Bayes-4&#xa;后验阈值优化" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#EAF3FF;strokeColor=#004488;strokeWidth=2;fontSize=12;fontStyle=1;fontColor=#1F2937;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="665" y="730" width="125" height="62" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="paramPanel" value="关键参数分析" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontSize=15;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=top;spacingTop=8;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="830" y="680" width="300" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="params" value="PCA 维度：10 - 120&#xa;正则化 γ：0 - 0.9&#xa;后验阈值：0.20 - 0.80&#xa;验证集选择最优组合" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=13;fontColor=#1F2937;align=left;spacingLeft=16;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="855" y="725" width="250" height="82" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="evalPanel" value="评价指标与结果输出" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;fontSize=15;fontStyle=1;fontColor=#1F2937;align=center;verticalAlign=top;spacingTop=8;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="680" width="370" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="metrics" value="指标：准确率、精确率、召回率、F1、AUC、IoU、误报率、漏报率&#xa;最终：Accuracy 0.9184，F1 0.5424，AUC 0.8986&#xa;输出：中文图表 + PPT 研讨材料" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=13;fontColor=#1F2937;align=left;spacingLeft=14;verticalAlign=middle;fontFamily=Microsoft YaHei;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="725" width="320" height="82" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="data" target="split"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="split" target="preprocess"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="preprocess" target="feature"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="feature" target="vector"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#23845A;strokeWidth=2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="feature" target="featurePanel"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="vector" target="standard">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1245" y="485"/>
+              <mxPoint x="165" y="485"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="standard" target="pca"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="pca" target="bayes"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="bayes" target="posterior"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="posterior" target="decision"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D95319;strokeWidth=2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="bayes" target="bayesPanel"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7E3FB2;strokeWidth=2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="pca" target="paramPanel"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D95319;strokeWidth=2;endArrow=block;endFill=1;dashed=1;" edge="1" parent="1" source="decision" target="evalPanel"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="eb01" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="b0" target="b1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="eb12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="b1" target="b2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="eb23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="b2" target="b3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="eb34" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=block;endFill=1;" edge="1" parent="1" source="b3" target="b4"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
