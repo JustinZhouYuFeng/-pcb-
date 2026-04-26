@@ -1,12 +1,15 @@
 # Raw / generated datasets
-data/raw/
+data/raw/aws_circuitboard/
+data/raw/deeppcb/DeepPCB/
+data/raw/**/.git/
+data/raw/**/.git/**
 data/interim/
-data/processed/**/*.mat
 data/splits/
 
 # Large MATLAB model artifacts
 results/models/
 *.mat
+!data/processed/**/*.mat
 
 # Deprecated non-Bayes comparison experiments
 code/04_baselines/
