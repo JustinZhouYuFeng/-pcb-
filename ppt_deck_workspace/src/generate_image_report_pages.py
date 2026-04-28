@@ -1,3 +1,7 @@
+# 中文注释：批量生成项目图文报告页面。
+# 主要流程：读取实验素材，按固定画布尺寸绘制多页中文说明图。
+# 输出结果：生成 image2_report_pages 目录中的汇报图片页面。
+
 from __future__ import annotations
 
 import math

@@ -1,3 +1,7 @@
+% 中文注释：比较多个贝叶斯优化版本在 PCB 缺陷检测任务上的表现。
+% 主要流程：逐步加入 PCA、协方差正则化、阈值优化和风险代价设置，观察指标变化。
+% 输出结果：生成 Bayes-0 到 Bayes-4 的对比结果，支撑论文/PPT 中的优化分析。
+
 function optimizationResultsFile = run_visa_bayes_optimization_comparison(featuresFile, bayesResultsFile, cfg)
 %RUN_VISA_BAYES_OPTIMIZATION_COMPARISON Compare only Bayesian optimizations.
 %

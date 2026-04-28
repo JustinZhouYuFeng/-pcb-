@@ -1,3 +1,7 @@
+# 中文注释：用 Python 生成贝叶斯报告中需要的中文信息图。
+# 主要流程：使用 PIL 绘制标题、公式、流程和结果说明，形成统一视觉风格。
+# 输出结果：保存为图片后插入 PPT 或报告页面。
+
 from __future__ import annotations
 
 import csv

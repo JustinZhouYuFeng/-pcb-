@@ -1,3 +1,7 @@
+% 中文注释：统一计算二分类任务的常用评价指标。
+% 主要流程：根据真实标签、预测标签和预测分数，统计准确率、精确率、召回率、F1 和 AUC。
+% 注意事项：该函数被多个实验脚本复用，保证指标口径一致。
+
 function M = classification_metrics(yTrue, yPred, scorePositive, positiveLabel)
 %CLASSIFICATION_METRICS Binary classification metrics for PCB anomaly.
 

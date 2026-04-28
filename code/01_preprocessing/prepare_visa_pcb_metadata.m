@@ -1,3 +1,7 @@
+% 中文注释：扫描 VisA PCB 原始图像目录，并整理训练、验证、测试元数据。
+% 主要流程：读取正常/缺陷样本路径、生成标签、按比例划分数据集并保存表格。
+% 输出结果：供特征提取脚本读取的 metadata 文件，保证后续实验使用同一份划分。
+
 function metadataFile = prepare_visa_pcb_metadata(cfg)
 %PREPARE_VISA_PCB_METADATA Build a train/val/test table for VisA PCB.
 

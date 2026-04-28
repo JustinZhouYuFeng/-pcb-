@@ -1,3 +1,7 @@
+% 中文注释：生成贝叶斯理论部分的中文示意图。
+% 主要流程：绘制先验、后验、阈值和最小风险等概念图，帮助解释模型原理。
+% 输出结果：保存可直接放入 PPT 或报告中的中文可视化素材。
+
 function make_bayes_theory_chinese_visuals(featuresFile, bayesResultsFile, cfg)
 %MAKE_BAYES_THEORY_CHINESE_VISUALS Create Chinese annotated Bayes theory plots.
 %

@@ -1,3 +1,7 @@
+// 中文注释：根据项目结果和图片素材生成哈尔滨工程大学汇报 PPT。
+// 主要流程：定义版式、加载图像素材、组织章节页面并导出 pptx 文件。
+// 注意事项：本脚本关注演示文稿排版，不改变 MATLAB 实验结果。
+
 import fs from "node:fs";
 import path from "node:path";
 import {

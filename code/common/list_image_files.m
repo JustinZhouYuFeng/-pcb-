@@ -1,3 +1,7 @@
+% 中文注释：列出指定目录下的图像文件。
+% 主要流程：按常见图片后缀递归或非递归扫描文件，返回统一格式的路径列表。
+% 注意事项：供元数据准备和图像读取流程复用。
+
 function files = list_image_files(rootDir)
 %LIST_IMAGE_FILES Recursively list common image files under rootDir.
 

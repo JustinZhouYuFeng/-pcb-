@@ -1,3 +1,7 @@
+# 中文注释：生成 PPT 中复用的基础视觉素材。
+# 主要流程：绘制项目流程、数据说明、模型框架等图片资源。
+# 输出结果：把素材集中保存，便于 PPT 构建脚本统一引用。
+
 from __future__ import annotations
 
 import math

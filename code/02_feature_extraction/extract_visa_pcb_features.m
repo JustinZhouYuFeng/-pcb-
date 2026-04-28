@@ -1,3 +1,7 @@
+% 中文注释：把 PCB 图像转换为可供贝叶斯模型使用的手工特征矩阵。
+% 主要流程：读取图像、统一尺寸、提取颜色/纹理/边缘/梯度等特征，并做标准化。
+% 输出结果：保存特征、标签和数据划分信息，作为分类实验的直接输入。
+
 function featuresFile = extract_visa_pcb_features(metadataFile, cfg)
 %EXTRACT_VISA_PCB_FEATURES Extract color, texture, edge, LBP and HOG features.
 

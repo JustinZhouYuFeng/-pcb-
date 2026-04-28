@@ -1,3 +1,7 @@
+% 中文注释：整个 VisA PCB 贝叶斯缺陷检测项目的 MATLAB 主入口。
+% 主要流程：依次完成元数据准备、特征提取、贝叶斯实验、优化对比和可视化生成。
+% 使用目的：一键复现实验流程，方便在汇报或答辩前重新生成全部结果。
+
 %% VisA PCB Bayesian decision project
 % Main task:
 %   Binary classification for real color PCB images: normal vs anomaly.

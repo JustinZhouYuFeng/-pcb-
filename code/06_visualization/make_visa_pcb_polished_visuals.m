@@ -1,3 +1,7 @@
+% 中文注释：生成排版更精细的 PCB 实验结果展示图。
+% 主要流程：读取实验结果，绘制优化对比、混淆矩阵、ROC 等适合汇报的图表。
+% 输出结果：保存到 ppt_materials 目录，作为最终演示文稿的主要图片来源。
+
 function make_visa_pcb_polished_visuals(featuresFile, bayesResultsFile, optimizationResultsFile, cfg)
 %MAKE_VISA_PCB_POLISHED_VISUALS Create Chinese PPT-ready comparison figures.
 

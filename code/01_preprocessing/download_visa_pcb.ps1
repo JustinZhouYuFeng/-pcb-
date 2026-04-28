@@ -1,3 +1,7 @@
+# 中文注释：下载 VisA 数据集中 PCB 子集的辅助脚本。
+# 主要流程：创建数据目录、配置下载地址、保存并解压原始数据。
+# 注意事项：脚本只负责数据准备，不参与后续贝叶斯建模计算。
+
 param(
     [string]$ArchivePath = "",
     [switch]$DeleteArchiveAfterExtract

@@ -1,3 +1,7 @@
+% 中文注释：运行 PCB 缺陷检测的基础贝叶斯分类实验。
+% 主要流程：加载特征、估计类别先验和类条件分布、计算后验概率并按阈值判别。
+% 输出结果：保存准确率、召回率、F1、AUC 等指标，用于评估贝叶斯决策效果。
+
 function resultsFile = run_visa_bayes_experiments(featuresFile, cfg)
 %RUN_VISA_BAYES_EXPERIMENTS Train Bayes decision models and tune threshold.
 

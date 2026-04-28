@@ -1,3 +1,7 @@
+% 中文注释：生成 PCB 贝叶斯实验的基础可视化图表。
+% 主要流程：展示数据分布、特征降维、模型指标和阈值变化趋势。
+% 输出结果：用于快速检查实验是否合理，也可作为报告素材。
+
 function make_visa_pcb_visuals(featuresFile, bayesResultsFile, optimizationResultsFile, cfg)
 %MAKE_VISA_PCB_VISUALS Generate Chinese supporting figures for the VisA PCB project.
 

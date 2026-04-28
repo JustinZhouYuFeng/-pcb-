@@ -1,3 +1,7 @@
+# 中文注释：生成真实 PCB1 到 PCB4 数据集说明页。
+# 主要流程：展示四个 PCB 子集的样本来源、类别含义和项目使用方式。
+# 输出结果：形成可直接插入汇报的单页图片。
+
 from __future__ import annotations
 
 from pathlib import Path

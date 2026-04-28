@@ -1,3 +1,7 @@
+% 中文注释：自动定位 VisA 数据集根目录。
+% 主要流程：根据项目配置和常见目录结构查找 PCB 原始数据所在位置。
+% 注意事项：集中处理路径差异，减少主流程脚本中的硬编码路径。
+
 function visaRoot = find_visa_root(projectRoot)
 %FIND_VISA_ROOT Locate the extracted VisA folder that contains pcb1..pcb4.
 
