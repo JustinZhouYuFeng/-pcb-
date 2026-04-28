@@ -9,6 +9,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# 模块说明：先确定项目根目录和原始数据保存位置。
 $ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $RawRoot = Join-Path $ProjectRoot "data\raw\visa"
 $Url = "https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar"
@@ -30,6 +31,7 @@ Write-Host "Project root: $ProjectRoot"
 Write-Host "Raw data root: $RawRoot"
 Write-Host "Archive path: $ArchivePath"
 
+# 模块说明：如果本地还没有完整压缩包，就从官方地址下载。
 if (-not (Test-Path $ArchivePath)) {
     Write-Host "Downloading VisA archive from AWS Open Data..."
     Write-Host "This file is about 1.93 GB."
@@ -56,6 +58,7 @@ if ($finalBytes -ne $ExpectedBytes) {
 }
 
 Write-Host "Inspecting archive structure..."
+# 模块说明：检查压缩包内部目录结构，判断解压时应该去掉几层路径前缀。
 $members = & tar -tf $ArchivePath
 
 if ($members -match "^VisA/pcb1/") {
@@ -70,6 +73,7 @@ if ($members -match "^VisA/pcb1/") {
 }
 
 Write-Host "Extracting PCB subsets only: pcb1, pcb2, pcb3, pcb4"
+# 模块说明：只抽取 PCB1 到 PCB4 的正常图、缺陷图和掩膜，避免解压无关类别。
 $paths = @(
     "${Prefix}pcb1",
     "${Prefix}pcb2",
@@ -87,6 +91,7 @@ if ($DeleteArchiveAfterExtract) {
     Write-Host "To delete it manually later: $ArchivePath"
 }
 
+# 模块说明：最后统计解压出的图像数量，快速确认数据是否准备成功。
 $imageCount = (Get-ChildItem -Path $RawRoot -Recurse -File |
     Where-Object { $_.Extension -match "^\.(jpg|jpeg|png|bmp)$" }).Count
 

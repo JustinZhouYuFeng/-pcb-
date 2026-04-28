@@ -31,6 +31,7 @@ LINE = "#C7D5E3"
 WHITE = "#FFFFFF"
 
 
+# 函数说明：设置 Matplotlib 中文字体，避免图表中文字乱码。
 def use_chinese_font() -> None:
     candidates = [
         r"C:\Windows\Fonts\msyh.ttc",
@@ -45,6 +46,7 @@ def use_chinese_font() -> None:
     plt.rcParams["axes.unicode_minus"] = False
 
 
+# 函数说明：读取 Bayes-0 基线指标，用于基线柱状图。
 def load_bayes0() -> dict[str, str]:
     with CSV_PATH.open("r", encoding="utf-8-sig", newline="") as f:
         for row in csv.DictReader(f):
@@ -53,6 +55,7 @@ def load_bayes0() -> dict[str, str]:
     raise RuntimeError("Bayes-0 row not found.")
 
 
+# 函数说明：在 Matplotlib 图中画一张浅色卡片背景。
 def card(fig: plt.Figure, xywh: tuple[float, float, float, float], radius: float = 0.018) -> None:
     x, y, w, h = xywh
     fig.patches.append(
@@ -70,6 +73,7 @@ def card(fig: plt.Figure, xywh: tuple[float, float, float, float], radius: float
     )
 
 
+# 函数说明：脚本入口，按顺序调用前面的函数生成最终文件。
 def main() -> None:
     use_chinese_font()
     OUT_DIR.mkdir(parents=True, exist_ok=True)

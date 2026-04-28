@@ -32,6 +32,7 @@ PALE_TEAL = "#E8F8F6"
 PALE_GOLD = "#FFF7E3"
 
 
+# 函数说明：加载中文字体，保证图片里的中文能正常显示。
 def font(size: int, bold: bool = False, formula: bool = False) -> ImageFont.FreeTypeFont:
     if formula:
         candidates = [
@@ -51,11 +52,13 @@ def font(size: int, bold: bool = False, formula: bool = False) -> ImageFont.Free
     return ImageFont.load_default()
 
 
+# 函数说明：计算一段文字的宽度，方便后续居中或换行。
 def text_w(draw: ImageDraw.ImageDraw, text: str, fnt: ImageFont.FreeTypeFont) -> int:
     box = draw.textbbox((0, 0), text, font=fnt)
     return box[2] - box[0]
 
 
+# 函数说明：把长句按最大宽度拆成多行，避免文字溢出。
 def wrap_text(draw: ImageDraw.ImageDraw, text: str, fnt: ImageFont.FreeTypeFont, max_w: int) -> list[str]:
     lines: list[str] = []
     current = ""
@@ -76,6 +79,7 @@ def wrap_text(draw: ImageDraw.ImageDraw, text: str, fnt: ImageFont.FreeTypeFont,
     return lines
 
 
+# 函数说明：按多行方式绘制文字，保证中文说明不挤出卡片。
 def draw_wrapped(
     draw: ImageDraw.ImageDraw,
     text: str,
@@ -95,10 +99,12 @@ def draw_wrapped(
     return y
 
 
+# 函数说明：绘制圆角矩形，作为信息卡片或内容面板。
 def rounded(draw: ImageDraw.ImageDraw, box, fill=WHITE, outline=LINE, width=2, radius=24) -> None:
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
+# 函数说明：把文字放在指定矩形区域正中间。
 def center_text(draw: ImageDraw.ImageDraw, box, text: str, fnt, fill=INK) -> None:
     x1, y1, x2, y2 = box
     bb = draw.textbbox((0, 0), text, font=fnt)
@@ -106,16 +112,19 @@ def center_text(draw: ImageDraw.ImageDraw, box, text: str, fnt, fill=INK) -> Non
     draw.text((x1 + (x2 - x1 - tw) / 2, y1 + (y2 - y1 - th) / 2 - 1), text, font=fnt, fill=fill)
 
 
+# 函数说明：绘制小标题胶囊，用来标识页面分区。
 def title_pill(draw: ImageDraw.ImageDraw, x: int, y: int, w: int, text: str, color: str = NAVY) -> None:
     rounded(draw, (x, y, x + w, y + 50), fill=color, outline=color, radius=12)
     center_text(draw, (x, y, x + w, y + 50), text, font(25, True), WHITE)
 
 
+# 函数说明：绘制一条带圆点的说明文字。
 def bullet(draw: ImageDraw.ImageDraw, x: int, y: int, text: str, color: str = BLUE, size: int = 23, width: int = 470) -> int:
     draw.ellipse((x, y + 11, x + 11, y + 22), fill=color)
     return draw_wrapped(draw, text, (x + 26, y), size, INK, width - 26, line_gap=7) + 12
 
 
+# 函数说明：绘制页面顶部标题栏和副标题。
 def draw_header(draw: ImageDraw.ImageDraw) -> None:
     draw.rectangle((0, 0, W, 156), fill=NAVY_DARK)
     draw.rectangle((0, 152, W, 158), fill="#F0A500")
@@ -126,6 +135,7 @@ def draw_header(draw: ImageDraw.ImageDraw) -> None:
     draw.text((1828, 116), "电子信息方向 · 模式识别", font=font(24, True), fill="#FFC44D", anchor="ra")
 
 
+# 函数说明：绘制贝叶斯公式说明卡片。
 def draw_formula_card(draw: ImageDraw.ImageDraw) -> None:
     panel = (20, 234, 578, 842)
     rounded(draw, panel, WHITE, "#9EB7CF", 2, 16)
@@ -148,14 +158,17 @@ def draw_formula_card(draw: ImageDraw.ImageDraw) -> None:
     draw.text((72, 776), "x：1318 维图像特征向量（颜色/纹理/边缘/HOG/LBP）", font=font(20), fill=INK)
 
 
+# 函数说明：计算一维高斯分布值，用于画类条件概率曲线。
 def gaussian(x: float, mu: float, sigma: float) -> float:
     return math.exp(-((x - mu) ** 2) / (2 * sigma**2))
 
 
+# 函数说明：把数学坐标转换成画布上的像素坐标。
 def map_point(x: float, y: float, x0: int, y0: int, w: int, h: int) -> tuple[int, int]:
     return int(x0 + x * w), int(y0 + h - y * h)
 
 
+# 函数说明：绘制类条件分布和阈值判别示意区域。
 def draw_distribution_panel(draw: ImageDraw.ImageDraw) -> None:
     panel = (604, 234, 1296, 842)
     rounded(draw, panel, WHITE, "#9EB7CF", 2, 16)
@@ -177,6 +190,7 @@ def draw_distribution_panel(draw: ImageDraw.ImageDraw) -> None:
     y2 = [v / max_y * 0.82 for v in y2]
     x_t = 0.51
 
+    # 函数说明：把曲线下方区域转换成多边形，用于填充误判区域。
     def polygon_for(vals: list[float], start_pred) -> list[tuple[int, int]]:
         pts = [(x0 + int(xs[0] * w), y0 + h)]
         pts += [map_point(x, y, x0, y0, w, h) for x, y in zip(xs, vals) if start_pred(x)]
@@ -216,6 +230,7 @@ def draw_distribution_panel(draw: ImageDraw.ImageDraw) -> None:
     draw.text((650, 812), "注：真实模型在 1318 维/PCA 特征空间中计算；此图只是一维投影示意。", font=font(18), fill=MUTED)
 
 
+# 函数说明：绘制最小风险决策公式和判别规则。
 def draw_risk_panel(draw: ImageDraw.ImageDraw) -> None:
     panel = (1321, 234, 1872, 842)
     rounded(draw, panel, WHITE, "#9EB7CF", 2, 16)
@@ -239,6 +254,7 @@ def draw_risk_panel(draw: ImageDraw.ImageDraw) -> None:
     draw.text((1372, 790), "零正确损失时：T = C_FA / (C_FA + C_Miss)", font=font(22, True), fill=RED)
 
 
+# 函数说明：绘制页面底部说明区。
 def draw_footer(draw: ImageDraw.ImageDraw) -> None:
     rounded(draw, (24, 886, 1870, 1003), fill="#EEF7FF", outline="#8EC5F2", width=2, radius=14)
     draw.ellipse((150, 910, 224, 984), fill=NAVY)
@@ -249,6 +265,7 @@ def draw_footer(draw: ImageDraw.ImageDraw) -> None:
     draw.rectangle((0, 1072, W, H), fill="#0A57A3")
 
 
+# 函数说明：脚本入口，按顺序调用前面的函数生成最终文件。
 def main() -> None:
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)

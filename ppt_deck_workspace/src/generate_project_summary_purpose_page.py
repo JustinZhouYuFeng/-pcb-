@@ -32,6 +32,7 @@ PALE_GREEN = "#EAF8F1"
 PALE_ORANGE = "#FFF0E2"
 
 
+# 函数说明：加载中文字体，供标题、正文和数字使用。
 def fnt(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     candidates = [
         r"C:\Windows\Fonts\msyhbd.ttc" if bold else r"C:\Windows\Fonts\msyh.ttc",
@@ -44,11 +45,13 @@ def fnt(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
+# 函数说明：计算文字宽高，帮助把文字放到合适位置。
 def text_size(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont) -> tuple[int, int]:
     box = draw.textbbox((0, 0), text, font=font)
     return box[2] - box[0], box[3] - box[1]
 
 
+# 函数说明：把长句按最大宽度拆成多行，避免文字溢出。
 def wrap(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_w: int) -> list[str]:
     lines: list[str] = []
     current = ""
@@ -69,6 +72,7 @@ def wrap(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max
     return lines
 
 
+# 函数说明：按多行方式绘制文字，保证中文说明不挤出卡片。
 def draw_wrapped(
     draw: ImageDraw.ImageDraw,
     text: str,
@@ -85,6 +89,7 @@ def draw_wrapped(
     return y
 
 
+# 函数说明：绘制圆角矩形，作为信息卡片或内容面板。
 def rounded(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -96,6 +101,7 @@ def rounded(
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
+# 函数说明：绘制箭头，表示流程方向或信息关系。
 def arrow(draw: ImageDraw.ImageDraw, start: tuple[int, int], end: tuple[int, int], color: str = BLUE, width: int = 4) -> None:
     x1, y1 = start
     x2, y2 = end
@@ -110,6 +116,7 @@ def arrow(draw: ImageDraw.ImageDraw, start: tuple[int, int], end: tuple[int, int
     draw.polygon(points, fill=color)
 
 
+# 函数说明：绘制单个指标卡片。
 def metric_card(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], value: str, label: str, color: str) -> None:
     rounded(draw, box, WHITE, "#CADAE8", 2, 18)
     x1, y1, _, _ = box
@@ -117,6 +124,7 @@ def metric_card(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], value
     draw.text((x1 + 27, y1 + 69), label, font=fnt(19), fill=MUTED)
 
 
+# 函数说明：脚本入口，按顺序调用前面的函数生成最终文件。
 def main() -> None:
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)

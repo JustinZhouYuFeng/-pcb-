@@ -2,6 +2,7 @@
 % 主要流程：展示数据分布、特征降维、模型指标和阈值变化趋势。
 % 输出结果：用于快速检查实验是否合理，也可作为报告素材。
 
+% 函数说明：生成基础版实验图表，方便快速检查和汇报。
 function make_visa_pcb_visuals(featuresFile, bayesResultsFile, optimizationResultsFile, cfg)
 %MAKE_VISA_PCB_VISUALS Generate Chinese supporting figures for the VisA PCB project.
 
@@ -25,6 +26,7 @@ make_bayes_optimization_comparison(O, figDir, pptDir, theme);
 make_threshold_curve(B, figDir, pptDir, theme);
 end
 
+% 函数说明：定义基础版图表的颜色和字体风格。
 function theme = pcb_theme_basic()
 theme.font = 'Microsoft YaHei';
 theme.bg = [1 1 1];
@@ -46,6 +48,7 @@ theme.palette = [
 ];
 end
 
+% 函数说明：设置 MATLAB 默认字体，避免中文标题或标签乱码。
 function setup_chinese_style(theme)
 set(groot, 'DefaultAxesFontName', theme.font);
 set(groot, 'DefaultTextFontName', theme.font);
@@ -54,6 +57,7 @@ set(groot, 'DefaultColorbarFontName', theme.font);
 set(groot, 'DefaultAxesTickDir', 'out');
 end
 
+% 函数说明：绘制各 PCB 子集的样本数量统计图。
 function make_dataset_count_chart(S, figDir, pptDir, theme)
 labelCn = label_to_chinese(string(S.Y));
 T = table(string(S.PCBSubset), categorical(labelCn, ["正常", "缺陷"]), string(S.Split), ...
@@ -74,6 +78,7 @@ export_to_both(fig, figDir, pptDir, "基础图_数据集样本统计.png");
 close(fig);
 end
 
+% 函数说明：拼出正常和缺陷样本示例图。
 function make_sample_grid(S, figDir, pptDir, theme)
 rng(42);
 subsets = ["pcb1", "pcb2", "pcb3", "pcb4"];
@@ -117,6 +122,7 @@ export_to_both(fig, figDir, pptDir, "基础图_真实电路板样本预览.png")
 close(fig);
 end
 
+% 函数说明：用固定规则选样本，保证每次生成的示例图一致。
 function picked = deterministic_pick(indices, count)
 if isempty(indices)
     picked = NaN(count, 1);
@@ -129,6 +135,7 @@ if numel(picked) < count
 end
 end
 
+% 函数说明：绘制 PCA 降维散点图，观察正常和缺陷样本是否可分。
 function make_pca_scatter(S, B, figDir, pptDir, theme)
 X = double(S.X);
 XZ = (X - B.prepBase.mu) ./ B.prepBase.sigma;
@@ -154,6 +161,7 @@ export_to_both(fig, figDir, pptDir, "基础图_主成分二维散点图.png");
 close(fig);
 end
 
+% 函数说明：绘制贝叶斯模型的混淆矩阵。
 function make_bayes_confusion(S, B, figDir, pptDir, theme)
 testMask = string(S.Split) == "test";
 X = double(S.X(testMask, :));
@@ -179,6 +187,7 @@ export_to_both(fig, figDir, pptDir, "基础图_贝叶斯混淆矩阵.png");
 close(fig);
 end
 
+% 函数说明：绘制贝叶斯不同优化阶段的指标对比图。
 function make_bayes_optimization_comparison(O, figDir, pptDir, theme)
 R = O.rows;
 labels = "Bayes-" + string(0:height(R)-1);
@@ -205,6 +214,7 @@ export_to_both(fig, figDir, pptDir, "基础图_贝叶斯优化阶段对比.png")
 close(fig);
 end
 
+% 函数说明：绘制阈值变化带来的性能曲线。
 function make_threshold_curve(B, figDir, pptDir, theme)
 rows = B.valRows;
 spec = B.bestSpec;
@@ -241,12 +251,14 @@ export_to_both(fig, figDir, pptDir, "基础图_后验阈值分析曲线.png");
 close(fig);
 end
 
+% 函数说明：从模型输出的多列概率中取出“缺陷”这一类的概率。
 function scoreAnomaly = positive_score(model, score)
 classNames = string(model.ClassNames);
 posCol = find(classNames == "anomaly", 1);
 scoreAnomaly = score(:, posCol);
 end
 
+% 函数说明：把模型标签转换成中文显示。
 function labelCn = label_to_chinese(label)
 label = string(label);
 labelCn = strings(size(label));
@@ -255,6 +267,7 @@ labelCn(label == "anomaly") = "缺陷";
 labelCn(labelCn == "") = label(labelCn == "");
 end
 
+% 函数说明：统一设置图表坐标轴的视觉样式。
 function style_axes(ax, theme)
 ax.Color = theme.bg;
 ax.FontName = theme.font;
@@ -270,6 +283,7 @@ grid(ax, 'off');
 set(ax, 'LooseInset', get(ax, 'TightInset'));
 end
 
+% 函数说明：给竖向柱状图添加数值标签。
 function add_vertical_bar_labels(bars, decimals)
 xtips = bars.XEndPoints;
 ytips = bars.YEndPoints;
@@ -281,17 +295,20 @@ for i = 1:numel(values)
 end
 end
 
+% 函数说明：把十六进制颜色转换成绘图函数需要的 RGB 数值。
 function rgb = hex2rgb(hex)
 hex = erase(string(hex), "#");
 rgb = sscanf(hex, "%2x%2x%2x", [1 3]) / 255;
 end
 
+% 函数说明：把同一张图同时保存到结果目录和 PPT 素材目录。
 function export_to_both(fig, figDir, pptDir, fileName)
 hide_axes_toolbars(fig);
 exportgraphics(fig, fullfile(figDir, fileName), 'Resolution', 260);
 exportgraphics(fig, fullfile(pptDir, fileName), 'Resolution', 260);
 end
 
+% 函数说明：隐藏 MATLAB 图窗工具条，让导出的图片更干净。
 function hide_axes_toolbars(fig)
 axesList = findall(fig, 'Type', 'axes');
 for i = 1:numel(axesList)

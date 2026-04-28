@@ -2,6 +2,7 @@
 % 主要流程：加载特征、估计类别先验和类条件分布、计算后验概率并按阈值判别。
 % 输出结果：保存准确率、召回率、F1、AUC 等指标，用于评估贝叶斯决策效果。
 
+% 函数说明：训练并评估基础贝叶斯模型，输出不同参数和阈值下的分类指标。
 function resultsFile = run_visa_bayes_experiments(featuresFile, cfg)
 %RUN_VISA_BAYES_EXPERIMENTS Train Bayes decision models and tune threshold.
 
@@ -107,6 +108,7 @@ fprintf("Bayes best test metrics saved: %s\n", testCsv);
 fprintf("Bayes model saved: %s\n", resultsFile);
 end
 
+% 函数说明：把一组阈值逐个试一遍，记录每个阈值对应的评价结果。
 function rows = threshold_rows(modelName, pcaDim, gamma, thresholds, yTrue, scoreAnomaly)
 rows = table();
 for t = 1:numel(thresholds)
@@ -119,6 +121,7 @@ for t = 1:numel(thresholds)
 end
 end
 
+% 函数说明：按指定 PCA 维数和正则化参数训练贝叶斯分类器。
 function [model, prep] = train_selected_bayes_model(XTrainZ, YTrain, coeff, spec)
 pcaDim = spec.PCADim;
 XTrainP = XTrainZ * coeff(:, 1:pcaDim);
@@ -145,12 +148,14 @@ switch string(spec.ModelName)
 end
 end
 
+% 函数说明：用训练好的模型预测样本为缺陷的概率分数。
 function scoreAnomaly = predict_anomaly_score(model, XZ, prep)
 XP = XZ * prep.coeff(:, 1:prep.pcaDim);
 [~, score] = predict(model, XP);
 scoreAnomaly = positive_score(model, score);
 end
 
+% 函数说明：从模型输出的多列概率中取出“缺陷”这一类的概率。
 function scoreAnomaly = positive_score(model, score)
 classNames = string(model.ClassNames);
 posCol = find(classNames == "anomaly", 1);
@@ -160,12 +165,14 @@ end
 scoreAnomaly = score(:, posCol);
 end
 
+% 函数说明：把缺陷概率和阈值比较，转成最终的正常/缺陷标签。
 function yPred = threshold_predict(scoreAnomaly, threshold)
 labels = repmat("normal", numel(scoreAnomaly), 1);
 labels(scoreAnomaly >= threshold) = "anomaly";
 yPred = categorical(labels, ["normal", "anomaly"]);
 end
 
+% 函数说明：用训练集计算均值和标准差，并完成特征标准化。
 function [XZ, prep] = standardize_train(X)
 prep.mu = mean(X, 1, 'omitnan');
 prep.sigma = std(X, 0, 1, 'omitnan');
@@ -174,6 +181,7 @@ XZ = (X - prep.mu) ./ prep.sigma;
 XZ(~isfinite(XZ)) = 0;
 end
 
+% 函数说明：把训练阶段得到的标准化参数应用到验证集或测试集。
 function XZ = standardize_apply(X, prep)
 XZ = (X - prep.mu) ./ prep.sigma;
 XZ(~isfinite(XZ)) = 0;

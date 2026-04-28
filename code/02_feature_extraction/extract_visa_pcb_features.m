@@ -2,6 +2,7 @@
 % 主要流程：读取图像、统一尺寸、提取颜色/纹理/边缘/梯度等特征，并做标准化。
 % 输出结果：保存特征、标签和数据划分信息，作为分类实验的直接输入。
 
+% 函数说明：读取元数据中的图像，逐张提取手工特征并保存成模型可用的矩阵。
 function featuresFile = extract_visa_pcb_features(metadataFile, cfg)
 %EXTRACT_VISA_PCB_FEATURES Extract color, texture, edge, LBP and HOG features.
 
@@ -50,6 +51,7 @@ fprintf("Features saved: %s\n", featuresFile);
 fprintf("Feature dimension: %d\n", size(X, 2));
 end
 
+% 函数说明：对单张 PCB 图像提取颜色、纹理、边缘和梯度等特征。
 function [features, names] = compute_single_image_features(imagePath, imageSize)
 img = imread(imagePath);
 if size(img, 3) == 1
@@ -108,6 +110,7 @@ names = [colorNames, grayNames, edgeNames, textureNames, lbpNames, hogNames]';
 features(~isfinite(features)) = 0;
 end
 
+% 函数说明：计算一个通道的均值、方差、分位数等统计量，作为图像特征的一部分。
 function [stats, names] = channel_stats(stack, channelNames)
 stats = [];
 names = strings(1, 0);

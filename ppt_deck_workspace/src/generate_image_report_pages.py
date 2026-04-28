@@ -43,6 +43,7 @@ except AttributeError:  # pragma: no cover
     RESAMPLE = Image.LANCZOS
 
 
+# 函数说明：加载中文字体，保证图片里的中文能正常显示。
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     candidates = [
         r"C:\Windows\Fonts\msyhbd.ttc" if bold else r"C:\Windows\Fonts\msyh.ttc",
@@ -55,6 +56,7 @@ def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
+# 函数说明：加载等宽字体，用来绘制代码片段和矩阵示意。
 def mono(size: int) -> ImageFont.FreeTypeFont:
     for item in [r"C:\Windows\Fonts\consola.ttf", r"C:\Windows\Fonts\cour.ttf"]:
         if Path(item).exists():
@@ -62,11 +64,13 @@ def mono(size: int) -> ImageFont.FreeTypeFont:
     return font(size)
 
 
+# 函数说明：计算文字宽高，帮助把文字放到合适位置。
 def text_size(draw: ImageDraw.ImageDraw, value: str, fnt: ImageFont.FreeTypeFont) -> tuple[int, int]:
     box = draw.textbbox((0, 0), value, font=fnt)
     return box[2] - box[0], box[3] - box[1]
 
 
+# 函数说明：把长句按最大宽度拆成多行，避免文字溢出。
 def wrapped_lines(draw: ImageDraw.ImageDraw, value: str, fnt: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
     lines: list[str] = []
     current = ""
@@ -87,6 +91,7 @@ def wrapped_lines(draw: ImageDraw.ImageDraw, value: str, fnt: ImageFont.FreeType
     return lines
 
 
+# 函数说明：按多行方式绘制文字，保证中文说明不挤出卡片。
 def draw_wrapped(
     draw: ImageDraw.ImageDraw,
     value: str,
@@ -107,10 +112,12 @@ def draw_wrapped(
     return y
 
 
+# 函数说明：创建统一尺寸和背景色的页面画布。
 def make_canvas() -> Image.Image:
     return Image.new("RGB", (W, H), BG)
 
 
+# 函数说明：给卡片区域加柔和阴影，让页面层次更清楚。
 def add_shadow(base: Image.Image, rect: tuple[int, int, int, int], radius: int = 24, alpha: int = 38) -> None:
     x1, y1, x2, y2 = rect
     layer = Image.new("RGBA", base.size, (0, 0, 0, 0))
@@ -120,10 +127,12 @@ def add_shadow(base: Image.Image, rect: tuple[int, int, int, int], radius: int =
     base.alpha_composite(layer) if base.mode == "RGBA" else base.paste(Image.alpha_composite(base.convert("RGBA"), layer).convert("RGB"))
 
 
+# 函数说明：绘制圆角矩形，作为信息卡片或内容面板。
 def rounded(draw: ImageDraw.ImageDraw, box, fill=WHITE, outline=LINE, width=2, radius=24) -> None:
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
+# 函数说明：绘制页面顶部标题栏和副标题。
 def header(draw: ImageDraw.ImageDraw, title: str, subtitle: str = "", tag: str = "HEU | Bayesian PCB Inspection") -> None:
     draw.rectangle((0, 0, W, 136), fill=NAVY)
     draw.text((76, 34), title, font=font(46, True), fill=WHITE)
@@ -133,11 +142,13 @@ def header(draw: ImageDraw.ImageDraw, title: str, subtitle: str = "", tag: str =
     draw.text((1664, 67), tag, font=font(18, True), fill=WHITE, anchor="mm")
 
 
+# 函数说明：绘制页脚和页码信息。
 def footer(draw: ImageDraw.ImageDraw, page_no: int) -> None:
     draw.text((76, 1035), "哈尔滨工程大学 · 电子信息方向 · 模式识别课程研讨", font=font(16), fill="#6B7E8F")
     draw.text((1838, 1035), f"{page_no:02d}", font=font(18, True), fill=NAVY, anchor="ra")
 
 
+# 函数说明：把图片完整放入目标区域，必要时留白。
 def contain(path: Path, size: tuple[int, int], bg: str = WHITE) -> Image.Image:
     img = Image.open(path).convert("RGB")
     tw, th = size
@@ -149,6 +160,7 @@ def contain(path: Path, size: tuple[int, int], bg: str = WHITE) -> Image.Image:
     return canvas
 
 
+# 函数说明：把图片按目标区域裁剪填满，用于样本展示。
 def cover(path: Path, size: tuple[int, int]) -> Image.Image:
     img = Image.open(path).convert("RGB")
     tw, th = size
@@ -160,6 +172,7 @@ def cover(path: Path, size: tuple[int, int]) -> Image.Image:
     return new.crop((left, top, left + tw, top + th))
 
 
+# 函数说明：把图片贴进卡片区域，并自动处理缩放和留白。
 def paste_card(base: Image.Image, box, img_path: Path, *, padding: int = 12, fit: str = "contain", bg: str = WHITE) -> None:
     draw = ImageDraw.Draw(base)
     rounded(draw, box, WHITE, LINE, 2, 18)
@@ -169,6 +182,7 @@ def paste_card(base: Image.Image, box, img_path: Path, *, padding: int = 12, fit
     base.paste(image, (x1 + padding, y1 + padding))
 
 
+# 函数说明：绘制统计数字卡片。
 def stat_card(draw: ImageDraw.ImageDraw, box, value: str, label: str, color: str) -> None:
     rounded(draw, box, WHITE, LINE, 2, 20)
     x1, y1, _, _ = box
@@ -176,6 +190,7 @@ def stat_card(draw: ImageDraw.ImageDraw, box, value: str, label: str, color: str
     draw.text((x1 + 25, y1 + 73), label, font=font(19), fill=MUTED)
 
 
+# 函数说明：绘制多条项目符号说明。
 def bullet_list(draw: ImageDraw.ImageDraw, items: Iterable[str], x: int, y: int, width: int, *, dot: str = GOLD, size: int = 24, gap: int = 16) -> int:
     for item in items:
         draw.ellipse((x, y + 10, x + 10, y + 20), fill=dot)
@@ -184,6 +199,7 @@ def bullet_list(draw: ImageDraw.ImageDraw, items: Iterable[str], x: int, y: int,
     return y
 
 
+# 函数说明：按页码和标题保存生成的图片。
 def save(page_no: int, title: str, img: Image.Image) -> Path:
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f"{page_no:02d}_{title}.png"
@@ -191,6 +207,7 @@ def save(page_no: int, title: str, img: Image.Image) -> Path:
     return path
 
 
+# 函数说明：生成第 1 页封面。
 def page_01_cover() -> Path:
     bg = cover(POLISHED / "00_哈工程深蓝封面背景.png", (W, H))
     d = ImageDraw.Draw(bg)
@@ -206,6 +223,7 @@ def page_01_cover() -> Path:
     return save(1, "封面", bg)
 
 
+# 函数说明：生成第 2 页项目主线说明。
 def page_02_storyline() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -236,6 +254,7 @@ def page_02_storyline() -> Path:
     return save(2, "汇报主线", img)
 
 
+# 函数说明：生成第 3 页数据集介绍。
 def page_03_dataset() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -304,6 +323,7 @@ def page_03_dataset() -> Path:
     return save(3, "数据集汇报界面", img)
 
 
+# 函数说明：生成第 4 页样本展示。
 def page_04_samples() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -313,6 +333,7 @@ def page_04_samples() -> Path:
     return save(4, "任务定义与样本", img)
 
 
+# 函数说明：生成第 5 页项目流程图。
 def page_05_flowchart() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -322,6 +343,7 @@ def page_05_flowchart() -> Path:
     return save(5, "项目流程图", img)
 
 
+# 函数说明：生成第 6 页特征提取可视化。
 def page_06_feature_visual() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -331,6 +353,7 @@ def page_06_feature_visual() -> Path:
     return save(6, "特征提取可视化", img)
 
 
+# 函数说明：生成第 7 页特征矩阵说明。
 def page_07_feature_matrix() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -380,6 +403,7 @@ def page_07_feature_matrix() -> Path:
     return save(7, "特征矩阵说明", img)
 
 
+# 函数说明：生成第 8 页贝叶斯理论说明。
 def page_08_bayes_theory() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -409,6 +433,7 @@ def page_08_bayes_theory() -> Path:
     return save(8, "贝叶斯决策原理", img)
 
 
+# 函数说明：生成第 9 页代码实现说明。
 def page_09_code() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -461,6 +486,7 @@ yPred(pBadVal >= T) = "anomaly";"""
     return save(9, "贝叶斯模型代码展示", img)
 
 
+# 函数说明：生成第 10 页优化阶段对比。
 def page_10_optimization() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -487,6 +513,7 @@ def page_10_optimization() -> Path:
     return save(10, "贝叶斯优化路径", img)
 
 
+# 函数说明：生成第 11 页参数分析。
 def page_11_parameters() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -515,6 +542,7 @@ def page_11_parameters() -> Path:
     return save(11, "参数热力图", img)
 
 
+# 函数说明：生成第 12 页阈值分析。
 def page_12_threshold() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -525,6 +553,7 @@ def page_12_threshold() -> Path:
     return save(12, "阈值风险权衡", img)
 
 
+# 函数说明：生成第 13 页模型指标总结。
 def page_13_metrics() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -555,6 +584,7 @@ def page_13_metrics() -> Path:
     return save(13, "核心指标对比", img)
 
 
+# 函数说明：生成第 14 页误报和漏检分析。
 def page_14_errors() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -565,6 +595,7 @@ def page_14_errors() -> Path:
     return save(14, "误报漏报与混淆矩阵", img)
 
 
+# 函数说明：生成第 15 页项目总结。
 def page_15_summary() -> Path:
     img = make_canvas()
     d = ImageDraw.Draw(img)
@@ -606,6 +637,7 @@ def page_15_summary() -> Path:
     return save(15, "总结与反思", img)
 
 
+# 函数说明：把多张报告页缩略图拼成一张总览图。
 def make_contact_sheet(paths: list[Path]) -> Path:
     thumb_w, thumb_h = 384, 216
     cols = 3
@@ -627,6 +659,7 @@ def make_contact_sheet(paths: list[Path]) -> Path:
     return out
 
 
+# 函数说明：脚本入口，按顺序调用前面的函数生成最终文件。
 def main() -> None:
     paths = [
         page_01_cover(),

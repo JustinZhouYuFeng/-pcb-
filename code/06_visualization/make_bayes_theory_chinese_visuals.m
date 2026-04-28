@@ -2,6 +2,7 @@
 % 主要流程：绘制先验、后验、阈值和最小风险等概念图，帮助解释模型原理。
 % 输出结果：保存可直接放入 PPT 或报告中的中文可视化素材。
 
+% 函数说明：生成贝叶斯理论讲解需要的中文示意图。
 function make_bayes_theory_chinese_visuals(featuresFile, bayesResultsFile, cfg)
 %MAKE_BAYES_THEORY_CHINESE_VISUALS Create Chinese annotated Bayes theory plots.
 %
@@ -37,6 +38,7 @@ make_bayesian_risk_curves(figDir, pptDir, colors);
 fprintf("Chinese Bayes theory figures saved to: %s\n", pptDir);
 end
 
+% 函数说明：画一维正态/缺陷分布重叠图，解释误判区域为什么存在。
 function make_1d_gaussian_overlap(figDir, pptDir, colors)
 mu1 = 0.0;
 sigma1 = 1.05;
@@ -92,6 +94,7 @@ export_to_both(fig, figDir, pptDir, "09_一维概率分布与贝叶斯误差.png
 close(fig);
 end
 
+% 函数说明：画二维后验概率和决策边界，让贝叶斯分类过程更直观。
 function make_2d_posterior_decision(S, B, figDir, pptDir, colors)
 X = double(S.X);
 Y = categorical(string(S.Y), ["normal", "anomaly"]);
@@ -173,6 +176,7 @@ export_to_both(fig, figDir, pptDir, "10_二维后验概率决策面.png");
 close(fig);
 end
 
+% 函数说明：画不同动作的条件风险曲线，说明最小风险决策怎么选。
 function make_bayesian_risk_curves(figDir, pptDir, colors)
 mu1 = 0.0;
 sigma1 = 1.05;
@@ -235,6 +239,7 @@ export_to_both(fig, figDir, pptDir, "11_贝叶斯风险与损失函数.png");
 close(fig);
 end
 
+% 函数说明：求两条高斯曲线加权后相交的位置，用作理论决策边界。
 function boundary = find_gaussian_boundary(mu1, s1, p1, mu2, s2, p2)
 % Solve p1*N(mu1,s1) = p2*N(mu2,s2).
 a = 1 / (2 * s2^2) - 1 / (2 * s1^2);
@@ -252,11 +257,13 @@ else
 end
 end
 
+% 函数说明：把十六进制颜色转换成绘图函数需要的 RGB 数值。
 function rgb = hex2rgb(hex)
 hex = erase(string(hex), "#");
 rgb = sscanf(hex, "%2x%2x%2x", [1 3]) / 255;
 end
 
+% 函数说明：生成蓝色系渐变色，用于后验概率等热力图。
 function cmap = skyline_colormap()
 anchors = [
     0.18 0.32 0.55
@@ -270,6 +277,7 @@ xi = linspace(0, 1, 256);
 cmap = interp1(x, anchors, xi);
 end
 
+% 函数说明：统一设置中文图表坐标轴字体、线宽和网格样式。
 function style_chinese_axes(ax)
 set(ax, 'FontName', 'Microsoft YaHei', 'FontSize', 12, ...
     'LineWidth', 1.1, 'TickDir', 'out', 'Box', 'off');
@@ -280,6 +288,7 @@ ax.XColor = [0.10 0.11 0.13];
 ax.YColor = [0.10 0.11 0.13];
 end
 
+% 函数说明：把同一张图同时保存到结果目录和 PPT 素材目录。
 function export_to_both(fig, figDir, pptDir, fileName)
 set(findall(fig, '-property', 'FontName'), 'FontName', 'Microsoft YaHei');
 hide_axes_toolbars(fig);
@@ -287,6 +296,7 @@ exportgraphics(fig, fullfile(figDir, fileName), 'Resolution', 300);
 exportgraphics(fig, fullfile(pptDir, fileName), 'Resolution', 300);
 end
 
+% 函数说明：隐藏 MATLAB 图窗工具条，让导出的图片更干净。
 function hide_axes_toolbars(fig)
 axesList = findall(fig, 'Type', 'axes');
 for i = 1:numel(axesList)

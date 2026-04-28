@@ -37,6 +37,7 @@ except AttributeError:
     RESAMPLE = Image.LANCZOS
 
 
+# 函数说明：加载中文字体，保证图片里的中文能正常显示。
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     candidates = [
         r"C:\Windows\Fonts\msyhbd.ttc" if bold else r"C:\Windows\Fonts\msyh.ttc",
@@ -49,6 +50,7 @@ def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
+# 函数说明：绘制圆角矩形，作为信息卡片或内容面板。
 def rounded(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -60,6 +62,7 @@ def rounded(
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
+# 函数说明：把图片按目标区域裁剪填满，用于样本展示。
 def cover(path: Path, size: tuple[int, int]) -> Image.Image:
     img = Image.open(path).convert("RGB")
     tw, th = size
@@ -72,6 +75,7 @@ def cover(path: Path, size: tuple[int, int]) -> Image.Image:
     return resized.crop((left, top, left + tw, top + th))
 
 
+# 函数说明：把图片完整放入目标区域，必要时留白。
 def contain(path: Path, size: tuple[int, int]) -> Image.Image:
     img = Image.open(path).convert("RGB")
     img = crop_pcb_region(img)
@@ -87,6 +91,7 @@ def contain(path: Path, size: tuple[int, int]) -> Image.Image:
     return canvas
 
 
+# 函数说明：裁剪 PCB 图像的有效区域，减少无关边框干扰。
 def crop_pcb_region(img: Image.Image) -> Image.Image:
     arr = np.asarray(img).astype(np.int16)
     r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
@@ -107,6 +112,7 @@ def crop_pcb_region(img: Image.Image) -> Image.Image:
     return img.crop((x1, y1, x2, y2))
 
 
+# 函数说明：按子集和标签找到一张代表性样本图。
 def sample_path(subset: str, label: str, preferred: str) -> Path:
     folder = DATA / subset / "Data" / "Images" / label
     preferred_path = folder / preferred
@@ -118,6 +124,7 @@ def sample_path(subset: str, label: str, preferred: str) -> Path:
     return files[0]
 
 
+# 函数说明：在指定区域居中绘制文字。
 def text_center(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -132,6 +139,7 @@ def text_center(
     draw.text((x1 + (x2 - x1 - tw) / 2, y1 + (y2 - y1 - th) / 2 - 1), text, font=text_font, fill=fill)
 
 
+# 函数说明：绘制小标签，用来标注正常或缺陷类别。
 def draw_tag(
     draw: ImageDraw.ImageDraw,
     x: int,
@@ -145,6 +153,7 @@ def draw_tag(
     text_center(draw, (x, y, x + width, y + 38), label, font(19, True), color)
 
 
+# 函数说明：绘制单张样本图及其文字说明。
 def draw_sample(
     base: Image.Image,
     draw: ImageDraw.ImageDraw,
@@ -167,6 +176,7 @@ def draw_sample(
     draw.rectangle(image_box, outline="#FFFFFF", width=2)
 
 
+# 函数说明：绘制一个 PCB 子集卡片，展示正常/缺陷样本。
 def draw_subset_card(
     base: Image.Image,
     draw: ImageDraw.ImageDraw,
@@ -209,6 +219,7 @@ def draw_subset_card(
     )
 
 
+# 函数说明：绘制数据统计卡片。
 def draw_stat_card(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], value: str, label: str, color: str) -> None:
     rounded(draw, box, WHITE, LINE, 2, 18)
     x1, y1, _, _ = box
@@ -216,6 +227,7 @@ def draw_stat_card(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], va
     draw.text((x1 + 25, y1 + 61), label, font=font(18), fill=MUTED)
 
 
+# 函数说明：脚本入口，按顺序调用前面的函数生成最终文件。
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     img = Image.new("RGB", (W, H), BG)

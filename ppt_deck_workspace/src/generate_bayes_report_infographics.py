@@ -39,6 +39,7 @@ CODE_BG = "#0B1F33"
 CODE_FG = "#E7F0FA"
 
 
+# 函数说明：加载中文字体，保证图片里的中文能正常显示。
 def font(size: int, bold: bool = False, mono: bool = False) -> ImageFont.FreeTypeFont:
     if mono:
         candidates = [r"C:\Windows\Fonts\consola.ttf", r"C:\Windows\Fonts\cour.ttf"]
@@ -54,10 +55,12 @@ def font(size: int, bold: bool = False, mono: bool = False) -> ImageFont.FreeTyp
     return ImageFont.load_default()
 
 
+# 函数说明：绘制圆角矩形，作为信息卡片或内容面板。
 def rounded(draw: ImageDraw.ImageDraw, box, fill=WHITE, outline=LINE, width=2, radius=24) -> None:
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
+# 函数说明：把文字放在指定矩形区域正中间。
 def center_text(draw: ImageDraw.ImageDraw, box, text: str, fnt, fill=INK) -> None:
     x1, y1, x2, y2 = box
     bbox = draw.textbbox((0, 0), text, font=fnt)
@@ -65,6 +68,7 @@ def center_text(draw: ImageDraw.ImageDraw, box, text: str, fnt, fill=INK) -> Non
     draw.text((x1 + (x2 - x1 - tw) / 2, y1 + (y2 - y1 - th) / 2 - 1), text, font=fnt, fill=fill)
 
 
+# 函数说明：绘制页面顶部标题栏和副标题。
 def draw_header(draw: ImageDraw.ImageDraw, title: str, subtitle: str) -> None:
     draw.rectangle((0, 0, W, 128), fill=NAVY)
     draw.text((76, 30), title, font=font(42, True), fill=WHITE)
@@ -73,11 +77,13 @@ def draw_header(draw: ImageDraw.ImageDraw, title: str, subtitle: str) -> None:
     center_text(draw, (1510, 39, 1840, 88), "HEU | PCB Bayes", font(18, True), WHITE)
 
 
+# 函数说明：读取实验结果 CSV，供图表页面使用。
 def load_rows() -> list[dict[str, str]]:
     with CSV_PATH.open("r", encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
 
 
+# 函数说明：根据阶段名称取出对应实验结果。
 def row_by_stage(rows: list[dict[str, str]], stage: str) -> dict[str, str]:
     for row in rows:
         if row["Stage"] == stage:
@@ -85,6 +91,7 @@ def row_by_stage(rows: list[dict[str, str]], stage: str) -> dict[str, str]:
     raise RuntimeError(f"{stage} not found")
 
 
+# 函数说明：绘制箭头，表示流程方向或信息关系。
 def draw_arrow(draw: ImageDraw.ImageDraw, start: tuple[int, int], end: tuple[int, int], color="#8CA6BD") -> None:
     x1, y1 = start
     x2, y2 = end
@@ -96,6 +103,7 @@ def draw_arrow(draw: ImageDraw.ImageDraw, start: tuple[int, int], end: tuple[int
     draw.polygon(tip, fill=color)
 
 
+# 函数说明：绘制环形指标图，突出准确率、召回率等关键数值。
 def metric_ring(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -115,6 +123,7 @@ def metric_ring(
     draw.text((x1 + 150, y1 + 72), note, font=font(17), fill=MUTED)
 
 
+# 函数说明：绘制概念解释卡片，帮助读者理解术语。
 def definition_card(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -131,6 +140,7 @@ def definition_card(
     draw.text((x1 + 20, y1 + 88), meaning, font=font(17), fill=MUTED)
 
 
+# 函数说明：绘制代码展示框，让实现思路更容易读。
 def code_box(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -150,6 +160,7 @@ def code_box(
         ty += 27
 
 
+# 函数说明：生成基础贝叶斯实验结果说明页。
 def draw_baseline_page(rows: list[dict[str, str]]) -> None:
     row = row_by_stage(rows, "Bayes-0")
     img = Image.new("RGB", (W, H), BG)
@@ -254,6 +265,7 @@ def draw_baseline_page(rows: list[dict[str, str]]) -> None:
     img.save(OUT_BASELINE, quality=95)
 
 
+# 函数说明：绘制模型优化阶段卡片。
 def stage_card(
     draw: ImageDraw.ImageDraw,
     box: tuple[int, int, int, int],
@@ -272,6 +284,7 @@ def stage_card(
     draw.text((x1 + 20, y2 - 40), f"F1={f1:.3f}  AUC={auc:.3f}", font=font(17, True), fill=BLUE)
 
 
+# 函数说明：绘制参数说明卡片。
 def param_card(draw: ImageDraw.ImageDraw, box, title: str, value: str, detail: str, color: str) -> None:
     x1, y1, x2, y2 = box
     rounded(draw, box, WHITE, LINE, 2, 18)
@@ -281,6 +294,7 @@ def param_card(draw: ImageDraw.ImageDraw, box, title: str, value: str, detail: s
         draw.text((x1 + 18, y1 + 86 + idx * 24), line, font=font(16), fill=MUTED)
 
 
+# 函数说明：生成代码流程说明页。
 def draw_code_page(rows: list[dict[str, str]]) -> None:
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)
@@ -383,6 +397,7 @@ def draw_code_page(rows: list[dict[str, str]]) -> None:
     img.save(OUT_CODE, quality=95)
 
 
+# 函数说明：脚本入口，按顺序调用前面的函数生成最终文件。
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     rows = load_rows()

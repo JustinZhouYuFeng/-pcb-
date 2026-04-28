@@ -2,6 +2,7 @@
 % 主要流程：逐步加入 PCA、协方差正则化、阈值优化和风险代价设置，观察指标变化。
 % 输出结果：生成 Bayes-0 到 Bayes-4 的对比结果，支撑论文/PPT 中的优化分析。
 
+% 函数说明：按优化阶段比较贝叶斯模型性能，展示从基础模型到最终模型的提升。
 function optimizationResultsFile = run_visa_bayes_optimization_comparison(featuresFile, bayesResultsFile, cfg)
 %RUN_VISA_BAYES_OPTIMIZATION_COMPARISON Compare only Bayesian optimizations.
 %
@@ -97,6 +98,7 @@ save(optimizationResultsFile, "rows", "prepBase", "coeff", "bestDim", ...
 fprintf("Bayes-only optimization comparison saved: %s\n", csvFile);
 end
 
+% 函数说明：评估某个优化阶段在验证集和测试集上的表现。
 function row = evaluate_stage(stageId, methodName, model, XVal, YVal, XTest, YTest, pcaDim, gamma, threshold)
 [~, valScoreRaw] = predict(model, XVal);
 valScore = positive_score(model, valScoreRaw);
@@ -120,6 +122,7 @@ row = table(string(stageId), string(methodName), pcaDim, gamma, threshold, ...
     'TP', 'FP', 'TN', 'FN'});
 end
 
+% 函数说明：从模型输出的多列概率中取出“缺陷”这一类的概率。
 function scoreAnomaly = positive_score(model, score)
 classNames = string(model.ClassNames);
 posCol = find(classNames == "anomaly", 1);
@@ -129,12 +132,14 @@ end
 scoreAnomaly = score(:, posCol);
 end
 
+% 函数说明：把缺陷概率和阈值比较，转成最终的正常/缺陷标签。
 function yPred = threshold_predict(scoreAnomaly, threshold)
 labels = repmat("normal", numel(scoreAnomaly), 1);
 labels(scoreAnomaly >= threshold) = "anomaly";
 yPred = categorical(labels, ["normal", "anomaly"]);
 end
 
+% 函数说明：用训练集计算均值和标准差，并完成特征标准化。
 function [XZ, prep] = standardize_train(X)
 prep.mu = mean(X, 1, 'omitnan');
 prep.sigma = std(X, 0, 1, 'omitnan');
@@ -143,6 +148,7 @@ XZ = (X - prep.mu) ./ prep.sigma;
 XZ(~isfinite(XZ)) = 0;
 end
 
+% 函数说明：把训练阶段得到的标准化参数应用到验证集或测试集。
 function XZ = standardize_apply(X, prep)
 XZ = (X - prep.mu) ./ prep.sigma;
 XZ(~isfinite(XZ)) = 0;

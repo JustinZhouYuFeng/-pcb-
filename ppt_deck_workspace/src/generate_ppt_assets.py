@@ -27,6 +27,7 @@ WHITE = "#FFFFFF"
 ORANGE = "#D95319"
 
 
+# 函数说明：加载中文字体，保证图片里的中文能正常显示。
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     candidates = [
         r"C:\Windows\Fonts\msyhbd.ttc" if bold else r"C:\Windows\Fonts\msyh.ttc",
@@ -39,11 +40,13 @@ def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
+# 函数说明：计算文字宽高，帮助把文字放到合适位置。
 def text_size(draw: ImageDraw.ImageDraw, text: str, fnt: ImageFont.FreeTypeFont) -> tuple[int, int]:
     box = draw.textbbox((0, 0), text, font=fnt)
     return box[2] - box[0], box[3] - box[1]
 
 
+# 函数说明：按多行方式绘制文字，保证中文说明不挤出卡片。
 def draw_wrapped(
     draw: ImageDraw.ImageDraw,
     text: str,
@@ -76,10 +79,12 @@ def draw_wrapped(
     return y
 
 
+# 函数说明：绘制圆角信息卡片，统一页面视觉样式。
 def rounded_card(draw: ImageDraw.ImageDraw, box, fill, outline="#D7DEE7", width=2, radius=28):
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
+# 函数说明：生成 PPT 封面背景图。
 def cover_background() -> None:
     w, h = 1920, 1080
     img = Image.new("RGB", (w, h), NAVY)
@@ -131,6 +136,7 @@ def cover_background() -> None:
     img.save(OUT / "00_哈工程深蓝封面背景.png", quality=95)
 
 
+# 函数说明：绘制箭头，表示流程方向或信息关系。
 def draw_arrow(draw: ImageDraw.ImageDraw, start, end, color=OCEAN, width=5):
     x1, y1 = start
     x2, y2 = end
@@ -142,6 +148,7 @@ def draw_arrow(draw: ImageDraw.ImageDraw, start, end, color=OCEAN, width=5):
     draw.polygon([end, p1, p2], fill=color)
 
 
+# 函数说明：生成项目整体流程图。
 def project_flowchart() -> None:
     w, h = 1920, 1080
     img = Image.new("RGB", (w, h), LIGHT)
@@ -197,6 +204,7 @@ def project_flowchart() -> None:
     img.save(OUT / "13_项目流程图.png", quality=95)
 
 
+# 函数说明：读取图片并等比例缩放到指定大小。
 def load_fit(path: Path, size: tuple[int, int]) -> Image.Image:
     img = Image.open(path).convert("RGB")
     target_w, target_h = size
@@ -208,6 +216,7 @@ def load_fit(path: Path, size: tuple[int, int]) -> Image.Image:
     return new.crop((left, top, left + target_w, top + target_h))
 
 
+# 函数说明：生成正常样本和缺陷样本的对比图。
 def sample_comparison() -> None:
     w, h = 1920, 1080
     img = Image.new("RGB", (w, h), LIGHT)

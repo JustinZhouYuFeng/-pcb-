@@ -2,6 +2,7 @@
 % 主要流程：读取正常/缺陷样本路径、生成标签、按比例划分数据集并保存表格。
 % 输出结果：供特征提取脚本读取的 metadata 文件，保证后续实验使用同一份划分。
 
+% 函数说明：整理 PCB 数据集清单，把每张图的路径、标签和所属划分保存下来。
 function metadataFile = prepare_visa_pcb_metadata(cfg)
 %PREPARE_VISA_PCB_METADATA Build a train/val/test table for VisA PCB.
 
@@ -57,6 +58,7 @@ disp(summaryTable);
 fprintf("Metadata saved: %s\n", metadataFile);
 end
 
+% 函数说明：按正常和缺陷两类分别划分数据，保证训练、验证、测试集中类别比例更稳定。
 function split = stratified_split(T, valRatio, testRatio)
 split = strings(height(T), 1);
 groupId = findgroups(T.PCBSubset, T.Label);
@@ -82,6 +84,7 @@ for g = 1:max(groupId)
 end
 end
 
+% 函数说明：根据缺陷图像路径推断对应的掩膜路径，方便后续查看缺陷区域。
 function maskPaths = estimate_mask_paths(anomalyFiles, anomalyRoot, maskRoot)
 maskPaths = strings(numel(anomalyFiles), 1);
 

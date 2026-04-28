@@ -2,6 +2,7 @@
 % 主要流程：根据真实标签、预测标签和预测分数，统计准确率、精确率、召回率、F1 和 AUC。
 % 注意事项：该函数被多个实验脚本复用，保证指标口径一致。
 
+% 函数说明：根据真实标签、预测标签和分数统一计算二分类指标。
 function M = classification_metrics(yTrue, yPred, scorePositive, positiveLabel)
 %CLASSIFICATION_METRICS Binary classification metrics for PCB anomaly.
 
@@ -42,6 +43,7 @@ M = table(accuracy, precision, recall, specificity, fpr, fnr, f1, iou, ...
     balancedAccuracy, auc, tp, fp, tn, fn);
 end
 
+% 函数说明：做除法时处理分母为零的情况，避免指标计算报错。
 function value = safe_div(num, den)
 if den == 0
     value = 0;

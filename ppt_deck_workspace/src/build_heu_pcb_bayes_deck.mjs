@@ -54,19 +54,23 @@ const C = {
   paleGold: "#FFF7DB",
 };
 
+// 函数说明：拼接精修版素材路径，方便后面插入 PPT。
 function asset(name) {
   return `${POLISHED}/${name}`;
 }
 
+// 函数说明：拼接基础素材路径，作为没有精修图时的备用来源。
 function basicAsset(name) {
   return `${MATERIAL}/${name}`;
 }
 
+// 函数说明：把 PNG 图片读成 data URL，供 PPT 工具直接嵌入。
 function pngDataUrl(filePath) {
   const bytes = fs.readFileSync(filePath);
   return `data:image/png;base64,${bytes.toString("base64")}`;
 }
 
+// 函数说明：把图片路径和显示参数包装成 PPT 可用的图片对象。
 function bitmap(filePath, opts = {}) {
   return image({
     dataUrl: pngDataUrl(filePath),
@@ -79,6 +83,7 @@ function bitmap(filePath, opts = {}) {
   });
 }
 
+// 函数说明：合并默认文字样式和自定义样式，减少重复配置。
 function baseStyle(style = {}) {
   return {
     fontFamily: "Microsoft YaHei",
@@ -87,6 +92,7 @@ function baseStyle(style = {}) {
   };
 }
 
+// 函数说明：创建普通文本组件，并套用统一字体和颜色。
 function tx(value, opts = {}) {
   return text(value, {
     width: opts.width ?? fill,
@@ -96,6 +102,7 @@ function tx(value, opts = {}) {
   });
 }
 
+// 函数说明：创建代码样式文本组件，用于展示脚本片段。
 function codeText(value, opts = {}) {
   return text(value, {
     width: opts.width ?? fill,
@@ -111,6 +118,7 @@ function codeText(value, opts = {}) {
   });
 }
 
+// 函数说明：绘制一条带圆点的说明文字。
 function bullet(lines, opts = {}) {
   return column(
     {
@@ -144,6 +152,7 @@ function bullet(lines, opts = {}) {
   );
 }
 
+// 函数说明：创建一个关键数字卡片，用来突出样本量或模型指标。
 function statCard(value, label, accent = C.navy2) {
   return panel(
     {
@@ -161,6 +170,7 @@ function statCard(value, label, accent = C.navy2) {
   );
 }
 
+// 函数说明：绘制页脚和页码信息。
 function footer(slideNo) {
   return row(
     { width: fill, height: hug, align: "center", justify: "between" },
@@ -177,6 +187,7 @@ function footer(slideNo) {
   );
 }
 
+// 函数说明：生成带统一标题栏和页脚的标准幻灯片。
 function titledSlide(p, slideNo, title, subtitle, main, opts = {}) {
   const slide = p.slides.add();
   const bg = opts.bg ?? C.bg;
@@ -230,6 +241,7 @@ function titledSlide(p, slideNo, title, subtitle, main, opts = {}) {
   return slide;
 }
 
+// 函数说明：生成带边框和留白的图片面板。
 function imagePanel(name, h = fill, fit = "contain") {
   return panel(
     {
@@ -244,10 +256,12 @@ function imagePanel(name, h = fill, fit = "contain") {
   );
 }
 
+// 函数说明：生成铺满主要区域的图片页。
 function plainImage(name, fit = "contain") {
   return bitmap(asset(name), { width: fill, height: fill, fit, alt: name });
 }
 
+// 函数说明：添加封面页，展示项目题目、身份信息和关键指标。
 function addCover(p) {
   const slide = p.slides.add();
   slide.compose(
@@ -328,6 +342,7 @@ function addCover(p) {
   );
 }
 
+// 函数说明：按顺序组装所有 PPT 页面，形成完整演示文稿。
 function addAllSlides(p) {
   addCover(p);
 
